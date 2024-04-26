@@ -100,8 +100,12 @@ class CropWorker(handler: IContainer, builder: CropBuilder) :
         result.originFile = mParams.originFile
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val imageBitmap = resultData?.data.let {
+                var uri = it
+                if (it == null && resultData?.data?.action != null) {
+                    uri = Uri.parse(resultData?.data?.action)
+                }
                 val inputStream =
-                    iContainer.provideActivity()!!.contentResolver.openInputStream(it!!)
+                    iContainer.provideActivity()!!.contentResolver.openInputStream(uri)
                 BitmapFactory.decodeStream(inputStream)
             }
             result.cropBitmap = imageBitmap
